@@ -11,7 +11,7 @@ PHP_UPLOAD_MAX_FILESIZE=100M PHP_POST_MAX_SIZE=100M NR_INSTALL_SILENT=true
 COPY build /build
 
 # Preparing for the installation
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y curl \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y curl openssl pkg-config \
 wget vim supervisor && echo "export TERM=xterm" >> ~/.bashrc && \
 
 # Installing nodejs
