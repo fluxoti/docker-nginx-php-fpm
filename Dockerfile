@@ -53,7 +53,7 @@ pecl install mongodb zip \
 
 # Installing NGINX
 RUN apt-get install -y --force-yes nginx && \
-rm /etc/nginx/nginx.conf && cp /build/templates/ngninx.conf /etc/nginx/nginx.conf
+rm /etc/nginx/nginx.conf && cp /build/templates/ngninx.conf /etc/nginx/nginx.conf && \
 rm /etc/nginx/sites-available/default && \
 cp /build/templates/virtualhost /etc/nginx/sites-available/default
 
