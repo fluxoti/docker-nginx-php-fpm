@@ -12,17 +12,17 @@ COPY build /build
 
 # Preparing for the installation
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y curl openssl pkg-config \
-wget vim supervisor && echo "export TERM=xterm" >> ~/.bashrc && \
+wget vim supervisor && echo "export TERM=xterm" >> ~/.bashrc
 
 # Installing nodejs
-curl --silent --location https://deb.nodesource.com/setup_5.x | bash - && \
+RUN curl --silent --location https://deb.nodesource.com/setup_5.x | bash - && \
 apt-get update && apt-get install -y --force-yes nodejs && \
 curl -L https://npmjs.org/install.sh | sh && \
 # disabling npm progress bar to speed up installs. See: https://github.com/npm/npm/issues/11283
- npm set progress=false && npm install gulp -g && \
+npm set progress=false && npm install gulp -g
 
 # Installing PHP and stuff
-LC_ALL=en_US.UTF-8 apt-add-repository ppa:ondrej/php -y && \
+RUN LC_ALL=en_US.UTF-8 apt-add-repository ppa:ondrej/php -y && \
 apt-get update && apt-get install -y --force-yes php7.0-cli php7.0-dev \
 php-pgsql php-sqlite3 php-gd php-apcu \
 php-curl php7.0-mcrypt \
@@ -49,23 +49,23 @@ pecl install mongodb zip \
 && echo "extension=mongodb.so" >> /etc/php/7.0/fpm/conf.d/20-mongodb.ini \
 && echo "extension=mongodb.so" >> /etc/php/7.0/cli/conf.d/20-mongodb.ini \
 && echo "extension=zip.so" >> /etc/php/7.0/fpm/conf.d/20-zip.ini \
-&& echo "extension=zip.so" >> /etc/php/7.0/cli/conf.d/20-zip.ini && \
+&& echo "extension=zip.so" >> /etc/php/7.0/cli/conf.d/20-zip.ini
 
 # Installing NGINX
-apt-get install -y --force-yes nginx && \
-echo "daemon off;" >> /etc/nginx/nginx.conf && \
-sed -i -e "s/user www-data/user root/g" /etc/nginx/nginx.conf && \
+RUN apt-get install -y --force-yes nginx && \
+rm /etc/nginx/nginx.conf && cp /build/templates/ngninx.conf /etc/nginx/nginx.conf
 rm /etc/nginx/sites-available/default && \
-cp /build/templates/virtualhost /etc/nginx/sites-available/default && \
+cp /build/templates/virtualhost /etc/nginx/sites-available/default
 
 # Installing new relic monitor agent
-echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | sudo tee /etc/apt/sources.list.d/newrelic.list && \
+RUN echo 'deb http://apt.newrelic.com/debian/ newrelic non-free' | sudo tee /etc/apt/sources.list.d/newrelic.list && \
 wget -O- https://download.newrelic.com/548C16BF.gpg | sudo apt-key add - && \
 sudo apt-get update --force-yes -y && \
 sudo apt-get install newrelic-php5 -y --force-yes && \
 sudo newrelic-install install && \
+rm /etc/php/7.0/cli/conf.d/newrelic.ini && rm /etc/php/7.0/fpm/conf.d/newrelic.ini
 
-service php7.0-fpm stop && service nginx stop && service supervisor stop && \
+RUN service php7.0-fpm stop && service nginx stop && service supervisor stop && \
 
 # Run PHP and Nginx with runit
 mkdir /etc/service/php7.0-fpm && mkdir /run/php && cp /build/run/php-fpm.sh /etc/service/php7.0-fpm/run \

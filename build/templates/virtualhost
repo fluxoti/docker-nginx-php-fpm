@@ -27,6 +27,12 @@ server {
         fastcgi_send_timeout 300;
         fastcgi_read_timeout 300;
     }
+
+    location ~* \.(jpg|jpeg|gif|png|css|js|ico|xml)$ {
+         access_log        off;
+         log_not_found     off;
+         expires           30d;
+     }
     
     location ~ \.ht {
         deny all;
