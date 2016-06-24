@@ -12,7 +12,7 @@ COPY build /build
 
 # Preparing for the installation
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y curl openssl pkg-config \
-wget vim supervisor && echo "export TERM=xterm" >> ~/.bashrc
+wget vim supervisor git && echo "export TERM=xterm" >> ~/.bashrc
 
 # Installing nodejs
 RUN curl --silent --location https://deb.nodesource.com/setup_5.x | bash - && \
